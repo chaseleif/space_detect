@@ -2,11 +2,11 @@
   Stellarium script to get screenshots of the sky with satellites
 */
 
-// the number of hours worth of images to collect: hours >= 1
+// the number of hours worth of images to collect: hours > 0
 const hours = 1;
 // set a static start time for reproducability
 core.setDate("2024-02-29T12:00:00")
-// seconds per tick: 3600 >= tickrate >= 1
+// seconds per tick: tickrate >= 1
 const tickrate = 1;
 core.setTimeRate(tickrate);
 
@@ -37,12 +37,8 @@ function printlocation() {
             "\nlocation: "+loc.location), duration=3);
 }
 
-// number of [tickrate] in an hour
-const ticks2hour = Math.floor(3600/tickrate)
-// tickrate should divide an hour (60*60 seconds)
-if (3600%tickrate != 0) {
-  print("WARNING: "+cat(tickrate)+" doesn\'t divide 3600", duration=2);
-}
+// the final number of ticks
+const tickstop = Math.floor(hours*3600/tickrate)
 
 // hide the landscape
 LandscapeMgr.setFlagLandscape(false);
@@ -120,17 +116,13 @@ print("Saving screenshots to directory "+savepath, duration=3);
 print("Starting - (close the script window) . . .", duration=3);
 
 // Fixed position, advance time and get some screenshots
-for (let hour=0;hour<hours;++hour) {
-  for (let tick=0;tick<3600;tick+=tickrate) {
-    // screenshot(prefix,invert,dir,overwrite,format)
-    // invert->colors ; overwrite means only "prefix.format"
-    core.screenshot("check", false, savepath, false, "png");
-    core.wait(1);
-    // early break for now
-    if (tick==500) break;
-  }
-  // early break
-  break;
+for (let tick=0;tick<tickstop;tick+=tickrate) {
+  // screenshot(prefix,invert,dir,overwrite,format)
+  // invert->colors ; overwrite means only "prefix.format"
+  core.screenshot("check", false, savepath, false, "png");
+  core.wait(1);
+  // early break for now
+  if (tick==500) break;
 }
 
 LabelMgr.labelScreen("Screenshot script finished",200,200,true,20,"#00ff00");
