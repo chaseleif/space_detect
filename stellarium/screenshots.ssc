@@ -132,6 +132,8 @@ for (let hour=0;hour<hours;++hour) {
   // early break
   break;
 }
-print("Screenshot scripts finished", duration=5);
+
+LabelMgr.labelScreen("Screenshot script finished",200,200,true,20,"#00ff00");
+core.wait(5);
 
 // vim: syntax=javascript
