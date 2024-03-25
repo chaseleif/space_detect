@@ -8,6 +8,11 @@ ___
 - Uncomment the line (remove the leading //)
 - Replace /my/save/path with the path to the directory to save screenshots (don't remove the quotation marks)
 
+**Other variables at the top of screenshots.ssc**
+- hours: the number of hours to collect
+- tickrate: seconds to elapse between screenshots
+- date: a starting date+time
+
 **Download additional data**
 - Open the "Configuration window" [F2]
 - Select the "Extras" tab
