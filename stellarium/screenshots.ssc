@@ -107,13 +107,12 @@ printlocation();
 // set the savepath
 // use the environment variable "STELLARIUM_OUTPUTDIR"
 // or add your own path, replace "/my/save/path"
-//  uncomment the commented out line and replace with your own path
+//  uncomment the commented out line and insert your own path
 const savepath =  (core.getEnv("STELLARIUM_OUTPUTDIR") != "") ?
                   core.getEnv("STELLARIUM_OUTPUTDIR") :
-                  (core.getEnv("USER") === "chaseleif") ?
-                  core.getEnv("HOME") + "/git/space_detect/data" :
 //                  (true) ? "/my/save/path" :
                   null;
+
 if (savepath == null) {
   print("ERROR: " +
         "Set output directory in script or variable STELLARIUM_OUTPUTDIR",
