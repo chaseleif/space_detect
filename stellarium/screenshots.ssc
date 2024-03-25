@@ -132,5 +132,6 @@ for (let hour=0;hour<hours;++hour) {
   // early break
   break;
 }
+print("Screenshot scripts finished", duration=5);
 
 // vim: syntax=javascript
