@@ -4,15 +4,17 @@
 
 // the number of hours worth of images to collect: hours > 0
 const hours = 1;
-// set a static start time for reproducability
-core.setDate("2024-02-29T12:00:00")
 // seconds per tick: tickrate >= 1
 const tickrate = 1;
-core.setTimeRate(tickrate);
+// set a static start time for reproducability
+const date = "2024-02-29T12:00:00";
 
 // function to print a line to the screen and pause for a duration
 function print(str, duration=1) {
-  LabelMgr.labelScreen(str,200,200,true,20,"#00ff00");
+  str = str.split('\n');
+  for (let i=0;i<str.length;++i) {
+    LabelMgr.labelScreen(str[i],200,200+i*30,true,20,"#00ff00");
+  }
   core.wait(duration);
   LabelMgr.deleteAllLabels();
 }
@@ -72,6 +74,9 @@ StelMovementMgr.toggleMountMode();
 // zoomTo(double aimFov, float zoomDuration) - change the zoom level
 //StelMovementMgr.zoomTo(10, 0);
 
+// Freeze time and set the start time
+core.setTimeRate(0);
+core.setDate(date)
 printlocation();
 
 // Select the International Space Station
@@ -86,10 +91,16 @@ const ISS = core.getSelectedObjectInfo();
 // ~ ecliptic coordinates (Earth's J2000 frame)
 core.setObserverLocation(ISS.elong, ISS.elat, ISS.altitude, 0, "ISS");
 
-// Allow the ISS to move away from our location
+
+// Allow the ISS to move away from our location for 2 seconds
+core.setTimeRate(1);
 core.wait(2);
 // Move the camera to point to (location does not "move"), duration=0
 core.moveToSelectedObject(0);
+
+// reset the date
+core.setTimeRate(0);
+core.setDate(date)
 
 printlocation();
 
@@ -112,8 +123,11 @@ if (savepath == null) {
 
 // Once the screenshots start capturing it will capture the script window
 //  show a starting message and give time to close the script window
-print("Saving screenshots to directory "+savepath, duration=3);
-print("Starting - (close the script window) . . .", duration=3);
+print("Saving screenshots to directory " + savepath +
+      "\nStarting - (close the script window) . . .", duration=6);
+
+// start the clock at our tickrate
+core.setTimeRate(tickrate);
 
 // Fixed position, advance time and get some screenshots
 for (let tick=0;tick<tickstop;tick+=tickrate) {
