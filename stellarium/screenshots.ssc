@@ -37,8 +37,8 @@ function printlocation() {
             "\nlocation: "+loc.location), duration=3);
 }
 
-// the final number of ticks
-const tickstop = Math.floor(hours*3600/tickrate)
+// the final tick is the number of hours * secs/hr
+const tickstop = Math.floor(3600*hours)
 
 // hide the landscape
 LandscapeMgr.setFlagLandscape(false);
