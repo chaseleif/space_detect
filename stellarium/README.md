@@ -1,20 +1,20 @@
 ## Stellarium
-Links to Stellarium and their documentation can be found in the main directory's README
+Links to Stellarium and their documentation can be found in the main repository `README`
 ___
 ### Configuration
-**Set your save path in the screenshot script**
+***Required*** **: set the save path in the screenshot script if not using `driver.py`**
 - Open `screenshots.ssc` in a text editor
-- Find the line before the final loop that contains `// (true) ? "/my/save/path" :`
+- Find the line in the *User-defined variables* section that contains `// (true) ? "/my/save/path" :`
 - Uncomment the line (remove the leading //)
 - Replace /my/save/path with the path to the directory to save screenshots (don't remove the quotation marks)
 
-**Other variables at the top of screenshots.ssc**
-- hours: the number of hours to collect
-- tickrate: seconds to elapse between screenshots
-- date: a starting date+time
+***Optional*** **: configure user-defined variables near the top of `screenshots.ssc`**
+- hours: the number of hours to collect, *must be a positive real number*
+- tickrate: seconds to elapse between screenshots, *must be positive and should be an integer*
+- date: the starting date+time, *e.g., 2024-02-29T12:00:00*
 
-**Download additional data**
-- Open the "Configuration window" [F2]
+**Download additional data: stars and satellites**
+- Open the "Configuration window" **[F2]**
 - Select the "Extras" tab
 - Download all available "Star catalog updates"
 - Select the "Plugins" tab
@@ -28,7 +28,7 @@ ___
 
 **The Stellarium user configuration file is stored at `~/.stellarium/config.ini`**
 
-Options which may be desired to or need to be changed
+**Options which may be desired to or need to be changed**
 - flag_allow_screenshots_dir = true
 - flag_script_allow_write_absolute_path = true
 - fullscreen = true
@@ -36,22 +36,28 @@ Options which may be desired to or need to be changed
 - screen_w = 1920
 ___
 ### Running the screenshots.ssc script
-Using either method to run the script, Stellarium will display a fullscreen window as the script runs.
+Using any method to run the script, Stellarium will display a fullscreen window as the script runs.
+- The Stellarium GUI window will close after the script has completed
+- Press **[Alt+F4]** to close the GUI window early
 
-Ensure the save path has been set, as indicated in the [configuration](#configuration) section above.
+*If not using `driver.py`, ensure the save path has been set, as indicated in the [configuration](#configuration) section above.*
 
-To run Stellarium with the script from the command-line, stellarium must be provided with the full path, e.g.,:
+**Method 1**: use the `driver.py` script to "automate" running Stellarium
+```bash
+$ python3 driver.py --stellarium
+```
+
+**Method 2**: Run Stellarium from the command-line, Stellarium *must* be provided with the full script path
 ```bash
 $ stellarium --startup-script $(pwd)/screenshots.ssc
 ```
-To run the script from the Stellarium GUI
+
+**Method 3**: Run the script from Stellarium's GUI
 - Open Stellarium
-- Press F12 to open the "Script console" window
+- Press **[F12]** to open the "Script console" window
 - Choose "Load file" to load a script file
-- Navigate to the script, and open it
+- Navigate to the script and open it
 - Press the "Play" button to begin the script
   - The "Script console" window ***will*** be included in any screenshots
-  - There is a small pause before screenshots begin, to provide time to close the console window
-- Stellarium will remain open when the screenshot script has completed
-- Press Alt+F4 to close the GUI window
+  - There is a small pause before screenshots begin to provide time to ***close*** the console window
 ___
