@@ -5,6 +5,7 @@
 // the number of hours worth of images to collect: hours > 0
 const hours = 1;
 // seconds per tick: tickrate >= 1
+// number of images generated = floor(hours*3600/tickrate)
 const tickrate = 1;
 // set a static start time for reproducability
 const date = "2024-02-29T12:00:00";
@@ -34,9 +35,10 @@ function cat() {
 // print information about the current location
 function printlocation() {
   const loc = core.getObserverLocationInfo();
-  print(cat("latitude, longitude: "+loc.longitude,loc.latitude,
-            "\naltitude: "+loc.altitude,"planet: "+loc.planet,
-            "\nlocation: "+loc.location), duration=3);
+  print(cat("latitude, longitude: " + loc.longitude, loc.latitude +
+            "\naltitude: " + loc.altitude, "location: " + loc.location +
+            "\nplanet: " + loc.planet),
+        duration=3);
 }
 
 // the final tick is the number of hours * secs/hr
@@ -71,32 +73,28 @@ core.setProjectionMode("ProjectionPerspective");
 // toggle the mount mode between equatorial and altazimuthal
 StelMovementMgr.toggleMountMode();
 
-// zoomTo(double aimFov, float zoomDuration) - change the zoom level
-//StelMovementMgr.zoomTo(10, 0);
-
 // Freeze time and set the start time
 core.setTimeRate(0);
 core.setDate(date)
 printlocation();
 
 // Select the International Space Station
-core.selectObjectByName("ISS (ZARYA)");
-const ISS = core.getSelectedObjectInfo();
+//core.selectObjectByName("ISS (ZARYA)");
+//const ISS = core.getSelectedObjectInfo();
 
 // Move the observer to the ISS - (long, lat, alt, duration, name, planet)
-// ~ galactic coordinates
-//core.setObserverLocation(ISS.glong, ISS.glat, ISS.altitude, 0, "ISS");
 // ~ ecliptic coordinates (Earth only)
 //core.setObserverLocation(ISS.elong, ISS.elat, ISS.altitude, 0, "ISS");
-// ~ ecliptic coordinates (Earth's J2000 frame)
-core.setObserverLocation(ISS.elong, ISS.elat, ISS.altitude, 0, "ISS");
+core.setObserverLocation(-97.911530, 29.890661, 300000, 0, "San Marcos (Texas)");
 
-
-// Allow the ISS to move away from our location for 2 seconds
-core.setTimeRate(1);
-core.wait(2);
+// Allow the ISS to move away from our location for 1 second
+//core.setTimeRate(1);
+//core.wait(1);
 // Move the camera to point to (location does not "move"), duration=0
-core.moveToSelectedObject(0);
+//core.moveToSelectedObject(0);
+
+// zoomTo(double aimFov, float zoomDuration) - change the zoom level
+StelMovementMgr.zoomTo(10, 0);
 
 // reset the date
 core.setTimeRate(0);
@@ -132,10 +130,8 @@ core.setTimeRate(tickrate);
 for (let tick=0;tick<tickstop;tick+=tickrate) {
   // screenshot(prefix,invert,dir,overwrite,format)
   // invert->colors ; overwrite means only "prefix.format"
-  core.screenshot("check", false, savepath, false, "png");
+  core.screenshot("img", false, savepath, false, "png");
   core.wait(1);
-  // early break for now
-  if (tick==500) break;
 }
 
 LabelMgr.labelScreen("Screenshot script finished",200,200,true,20,"#00ff00");
