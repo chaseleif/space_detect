@@ -1,15 +1,29 @@
 /* screenshots.ssc
-  Stellarium script to get screenshots of the sky with satellites
+** Stellarium script to get screenshots of the sky with satellites
 */
 
+/**
+** User-defined variables
+*/
+// number of images generated = floor(hours*3600/tickrate)
 // the number of hours worth of images to collect: hours > 0
 const hours = 1;
 // seconds per tick: tickrate >= 1
-// number of images generated = floor(hours*3600/tickrate)
 const tickrate = 1;
 // set a static start time for reproducability
 const date = "2024-02-29T12:00:00";
+// set the savepath
+// use the environment variable "STELLARIUM_OUTPUTDIR"
+// or add your own path by replacing "/my/save/path"
+//  (uncomment the commented out line and insert your own path)
+const savepath =  (core.getEnv("STELLARIUM_OUTPUTDIR") != "") ?
+                  core.getEnv("STELLARIUM_OUTPUTDIR") :
+//                  (true) ? "/my/save/path" :
+                  null;
 
+/*
+** Utility functions
+*/
 // function to print a line to the screen and pause for a duration
 function print(str, duration=1) {
   str = str.split('\n');
@@ -41,7 +55,18 @@ function printlocation() {
         duration=3);
 }
 
-// the final tick is the number of hours * secs/hr
+/*
+** Prepare to enter screenshot loop
+*/
+// check the savepath, we can't continue without a valid path
+if (savepath == null) {
+  print("ERROR: " +
+        "Set output directory in script or variable STELLARIUM_OUTPUTDIR",
+        duration=10);
+  core.quitStellarium();
+}
+
+// the tick limit: the number of hours * secs/hr
 const tickstop = Math.floor(3600*hours)
 
 // hide the landscape
@@ -65,6 +90,8 @@ core.setGuiVisible(false);
 
 // turn on satellites
 Satellites.setFlagHintsVisible(true);
+// turn on satellite markers
+Satellites.setFlagIconicMode(true);
 
 // set the type of viewport
 core.setProjectionMode("ProjectionPerspective");
@@ -73,50 +100,32 @@ core.setProjectionMode("ProjectionPerspective");
 // toggle the mount mode between equatorial and altazimuthal
 StelMovementMgr.toggleMountMode();
 
-// Freeze time and set the start time
+// Freeze time at the start date+time
 core.setTimeRate(0);
 core.setDate(date)
-printlocation();
+//printlocation();
+
+// Set the location to San Marcos, Tx
+core.setObserverLocation(-97.911530, 29.890661, 300000, 0, "San Marcos (Texas)");
 
 // Select the International Space Station
 //core.selectObjectByName("ISS (ZARYA)");
 //const ISS = core.getSelectedObjectInfo();
-
 // Move the observer to the ISS - (long, lat, alt, duration, name, planet)
 // ~ ecliptic coordinates (Earth only)
 //core.setObserverLocation(ISS.elong, ISS.elat, ISS.altitude, 0, "ISS");
-core.setObserverLocation(-97.911530, 29.890661, 300000, 0, "San Marcos (Texas)");
-
 // Allow the ISS to move away from our location for 1 second
 //core.setTimeRate(1);
 //core.wait(1);
 // Move the camera to point to (location does not "move"), duration=0
 //core.moveToSelectedObject(0);
+// reset the date
+//core.setTimeRate(0);
+//core.setDate(date)
+//printlocation();
 
 // zoomTo(double aimFov, float zoomDuration) - change the zoom level
 StelMovementMgr.zoomTo(10, 0);
-
-// reset the date
-core.setTimeRate(0);
-core.setDate(date)
-
-printlocation();
-
-// set the savepath
-// use the environment variable "STELLARIUM_OUTPUTDIR"
-// or add your own path, replace "/my/save/path"
-//  uncomment the commented out line and insert your own path
-const savepath =  (core.getEnv("STELLARIUM_OUTPUTDIR") != "") ?
-                  core.getEnv("STELLARIUM_OUTPUTDIR") :
-//                  (true) ? "/my/save/path" :
-                  null;
-
-if (savepath == null) {
-  print("ERROR: " +
-        "Set output directory in script or variable STELLARIUM_OUTPUTDIR",
-        duration=10);
-  core.exit();
-}
 
 // Once the screenshots start capturing it will capture the script window
 //  show a starting message and give time to close the script window
@@ -134,7 +143,7 @@ for (let tick=0;tick<tickstop;tick+=tickrate) {
   core.wait(1);
 }
 
-LabelMgr.labelScreen("Screenshot script finished",200,200,true,20,"#00ff00");
-core.wait(5);
+print("Screenshot script finished successfully", duration=5);
+core.quitStellarium();
 
 // vim: syntax=javascript
