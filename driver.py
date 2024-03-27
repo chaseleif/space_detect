@@ -3,6 +3,7 @@
 import argparse, os, sys
 
 from util import run_stellarium
+from starcv import markSatellites
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(add_help=False,
@@ -14,6 +15,8 @@ if __name__ == '__main__':
                       help='show this help message.')
   parser.add_argument('-s', '--stellarium', action='store_true',
                       help='Run Stellarium to generate images')
+  parser.add_argument('-t', '--test', action='store_true',
+                      help='Run under construction test')
   args = vars(parser.parse_args())
   if 'help' in args:
     parser.print_help()
@@ -23,4 +26,16 @@ if __name__ == '__main__':
     ret = run_stellarium(basedir)
     if ret == 0: print('Stellarium completed successfully')
     else: print('Stellarium exited with code', ret)
+  if 'test' in args:
+    imgpath = os.path.join(basedir, 'data')
+    if not os.path.isdir(imgpath):
+      print(f'Data directory {imgpath} doesn\'t exist')
+      sys.exit(1)
+    imgnum = 1
+    imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
+    while os.path.isfile(imgname):
+      markSatellites(imgname)
+      imgnum += 1
+      imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
+      if imgnum > 5: break
 

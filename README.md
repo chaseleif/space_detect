@@ -16,6 +16,7 @@ Using PIP (*recommended*)
 1) Create a virtual environment: `python3 -m venv venv`
 2) Activate the environment: `source venv/bin/activate`
 3) Upgrade pip: `pip install --upgrade pip`
+4) Install packages: `pip install opencv-python`
 
 Using Anaconda
 1) Install Anaconda or Miniconda, directions [here](https://www.anaconda.com/download/) or [here](https://docs.anaconda.com/free/anaconda/install/)
