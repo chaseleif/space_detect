@@ -17,10 +17,8 @@ del root
 def showImg(img, title='Image'):
   if showImg.scale is None:
     scale = min(1,min(img.shape[0]/screeny, img.shape[1]/screenx))
-    if scale < 1:
-      showImg.scale = (img.shape[0]*scale,img.shape[1]*scale)
-    else:
-      showImg.scale = False
+    showImg.scale = (img.shape[0]*scale,img.shape[1]*scale) if scale < 1 \
+                                                            else False
   cv.namedWindow(title)
   if isinstance(showImg.scale, tuple):
     scaled = cv.resize(img, showImg.scale)
@@ -38,12 +36,14 @@ def processImgStream(img):
   mask_eroded = cv.morphologyEx(mask_thresh, cv.MORPH_OPEN, kernel)
   fg_mask = processImgStream.backsub.apply(mask_eroded)
   contours, hierarchy = cv.findContours(fg_mask, cv.RETR_EXTERNAL,
-                                        cv.CHAIN_APPROX_SIMPLE)
+                                        cv.CHAIN_APPROX_TC89_L1)
+  #cv.CHAIN_APPROX_SIMPLE)
   for contour in contours:
     x,y,w,h = cv.boundingRect(contour)
     img = cv.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)
   return img
 processImgStream.backsub = cv.createBackgroundSubtractorMOG2()
+#processImgStream.backsub = cv.createBackgroundSubtractorKNN()
 
 def markSatellites(imgpath):
   img = loadimg(imgpath)
