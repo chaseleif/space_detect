@@ -33,9 +33,11 @@ if __name__ == '__main__':
       sys.exit(1)
     imgnum = 1
     imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
-    while os.path.isfile(imgname):
+    cont = True
+    while cont and os.path.isfile(imgname):
       markSatellites(imgname)
       imgnum += 1
       imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
-      if imgnum > 5: break
+      cont = input('Continue? [y/N]: ')
+      cont = cont.lower().startswith('y')
 

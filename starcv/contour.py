@@ -50,4 +50,6 @@ def markSatellites(imgpath):
   showImg(img, 'Input')
   marked = processImgStream(img)
   showImg(marked, 'Marked')
+  #outname = os.path.join('output',imgpath.split(os.path.sep)[-1])
+  #cv.imwrite(outname, marked)
 

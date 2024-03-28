@@ -6,10 +6,17 @@
 ** User-defined variables
 */
 // number of images generated = floor(hours*3600/tickrate)
-// the number of hours worth of images to collect: hours > 0
-const hours = 1;
-// seconds per tick: tickrate >= 1
-const tickrate = 1;
+// the length of time to collect images for:
+const hours = 0;
+const minutes = 1;
+const seconds = 0;
+// ticks per second or seconds per tick
+const tickpersec = 32;
+const secpertick = 1/tickpersec;
+/*
+const secpertick = 2;
+const tickpersec = 1/secpertick;
+*/
 // set a static start time for reproducability
 const date = "2024-02-29T12:00:00";
 // set the savepath
@@ -66,8 +73,8 @@ if (savepath == null) {
   core.quitStellarium();
 }
 
-// the tick limit: the number of hours * secs/hr
-const tickstop = Math.floor(3600*hours)
+// the tick stop: number of seconds multiplied by the ticks per second
+const tickstop = (seconds + minutes*60 + hours*3600)*tickpersec;
 
 // hide the landscape
 LandscapeMgr.setFlagLandscape(false);
@@ -133,10 +140,10 @@ print("Saving screenshots to directory " + savepath +
       "\nStarting - (close the script window) . . .", duration=6);
 
 // start the clock at our tickrate
-core.setTimeRate(tickrate);
+core.setTimeRate(secpertick);
 
 // Fixed position, advance time and get some screenshots
-for (let tick=0;tick<tickstop;tick+=tickrate) {
+for (let tick=0;tick<tickstop;++tick) {
   // screenshot(prefix,invert,dir,overwrite,format)
   // invert->colors ; overwrite means only "prefix.format"
   core.screenshot("img", false, savepath, false, "png");
