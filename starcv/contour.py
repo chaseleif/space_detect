@@ -50,31 +50,31 @@ def processImgStream(img, splitimg=False, truth=None):
     for contour in contours:
       x,y,w,h = cv.boundingRect(contour)
       # if the region is black call this a false positive
-      if np.sum(truth[y:y+h,x:x+w]) == 0:
+      if np.max(truth[y:y+h,x:x+w]) == 0:
         fp += 1
+      img = cv.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)
     for contour in contours:
       x,y,w,h = cv.boundingRect(contour)
       # if the region is white call this a positive
-      if np.sum(truth[y:y+h,x:x+w]) > 0:
+      if np.max(truth[y:y+h,x:x+w]) > 0:
         tp += 1
-      # x,y index of the maximum value of truth within this contour
-      seed = truth[y:y+h,x:x+w].argmax()
-      seed = (x+seed%w,y+seed//w)
-      # fill pixels from the seed to black
-      cv.floodFill(truth, None, seed, (0))
+        # zero out this block
+        while np.max(truth[y:y+h,x:x+w]) > 0:
+          # x,y index of the maximum value of truth within this contour
+          seed = truth[y:y+h,x:x+w].argmax()
+          seed = (x+seed%w,y+seed//w)
+          # fill pixels from the seed to black
+          cv.floodFill(truth, None, seed, (0))
     # Find remaining objects within truth
     contours, hierarchy = cv.findContours(truth, cv.RETR_EXTERNAL,
                                           cv.CHAIN_APPROX_SIMPLE)
     # the remaining number of white squares
     missed = len(contours)
-    '''
     # put a box around each "missing" contour
     for contour in contours:
       x,y,w,h = cv.boundingRect(contour)
-      img = cv.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)
-    showImg(img, 'Missed satellites')
-    '''
-    return tp, fp, missed
+      img = cv.rectangle(img, (x,y), (x+w,y+h), (0,0,255), 2)
+    return img, tp, fp, missed
   for contour in contours:
     x,y,w,h = cv.boundingRect(contour)
     img = cv.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)
@@ -136,7 +136,9 @@ def getStats(imgpath):
   # load the color image
   img = loadimg(imgpath)
   # processImgStream with the "truth"
-  tp, fp, missed = processImgStream(img, truth=truth)
+  img, tp, fp, missed = processImgStream(img, truth=truth)
+  outname = os.path.join('output',imgpath.split(os.path.sep)[-1])
+  cv.imwrite(outname, img)
   #print(f'{imgpath.split(os.path.sep)[-1]}: {numsats=} {tp=} {fp=} {missed=}')
   print(f'{imgpath.split(os.path.sep)[-1]},{numsats},{tp},{fp},{missed}')
 
