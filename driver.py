@@ -34,9 +34,14 @@ if __name__ == '__main__':
     imgnum = 1
     imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
     cont = True
+    # Whether we're making a csv
+    csv = True
+    if csv: print('image,num_sats,tp,fp,missed')
     while cont and os.path.isfile(imgname):
-      #markSatellites(imgname)
-      getStats(imgname)
+      if csv:
+        getStats(imgname)
+      else:
+        markSatellites(imgname)
       imgnum += 1
       imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
       #cont = input('Continue? [y/N]: ')

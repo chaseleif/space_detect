@@ -97,6 +97,7 @@ def markSatellites(imgpath):
   outname = os.path.join('output',imgpath.split(os.path.sep)[-1])
   cv.imwrite(outname, marked)
 
+# can print field name/val or csv-style
 def getStats(imgpath):
   img = cv.imread(imgpath, cv.IMREAD_GRAYSCALE)
   img[img<100] = 0
@@ -136,9 +137,6 @@ def getStats(imgpath):
   img = loadimg(imgpath)
   # processImgStream with the "truth"
   tp, fp, missed = processImgStream(img, truth=truth)
-  # numsats is a count of the boxes in truth
-  # total is the sum of pixels
-  # pred is the sum of pixels which were within bounding boxes
-  # missed is the sum of pixels which were outside of bounding boxes
-  print(f'{imgpath.split(os.path.sep)[-1]}: {numsats=} {tp=} {fp=} {missed=}')
+  #print(f'{imgpath.split(os.path.sep)[-1]}: {numsats=} {tp=} {fp=} {missed=}')
+  print(f'{imgpath.split(os.path.sep)[-1]},{numsats},{tp},{fp},{missed}')
 
