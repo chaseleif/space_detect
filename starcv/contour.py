@@ -52,7 +52,9 @@ def processImgStream(img, splitimg=False, truth=None):
       # if the region is black call this a false positive
       if np.max(truth[y:y+h,x:x+w]) == 0:
         fp += 1
-      img = cv.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)
+        img = cv.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
+      else:
+        img = cv.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)
     for contour in contours:
       x,y,w,h = cv.boundingRect(contour)
       # if the region is white call this a positive
