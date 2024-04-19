@@ -3,7 +3,7 @@
 import argparse, os, sys
 
 from util import run_stellarium
-from starcv import markSatellites
+from starcv import markSatellites, getStats
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(add_help=False,
@@ -35,9 +35,10 @@ if __name__ == '__main__':
     imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
     cont = True
     while cont and os.path.isfile(imgname):
-      markSatellites(imgname)
+      #markSatellites(imgname)
+      getStats(imgname)
       imgnum += 1
       imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
-      cont = input('Continue? [y/N]: ')
-      cont = cont.lower().startswith('y')
+      #cont = input('Continue? [y/N]: ')
+      #cont = cont.lower().startswith('y')
 

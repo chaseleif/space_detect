@@ -1,3 +1,3 @@
 #! /usr/bin/env python3
 
-from .contour import markSatellites
+from .contour import markSatellites, getStats
