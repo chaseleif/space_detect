@@ -51,11 +51,9 @@ if __name__ == '__main__':
     if truth: print('image,num_sats,tp,fp,missed')
     imgnum = 1
     imgname = os.path.join(imgpath, f'img{imgnum:03d}.png')
+    processimg = getStats if truth else markSatellites
     while os.path.isfile(imgname):
-      if truth:
-        getStats(imgname, **args)
-      else:
-        markSatellites(imgname, **args)
+      processimg(imgname, **args)
       if pause and not input('Continue? ').lower().startswith('y'):
         break
       imgnum += 1
