@@ -33,13 +33,16 @@ def processImgStream(img, splitimg=False, truth=None):
   ret, mask_thresh = cv.threshold(img, 100, 255, cv.THRESH_BINARY)
   kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3, 3))
   mask_eroded = cv.morphologyEx(mask_thresh, cv.MORPH_OPEN, kernel)
-  if splitimg:
+  if splitimg and truth is None:
     saveimg = np.concatenate((saveimg, mask_eroded[400:800,400:800]), axis=1)
   fg_mask = processImgStream.backsub.apply(mask_eroded)
   contours, hierarchy = cv.findContours(fg_mask, cv.RETR_EXTERNAL,
                                         cv.CHAIN_APPROX_TC89_L1)
   #cv.CHAIN_APPROX_SIMPLE)
   if truth is not None:
+    if splitimg:
+      right = cv.cvtColor(truth[400:800,400:800], cv.COLOR_GRAY2RGB)
+      saveimg = np.concatenate((saveimg, right), axis=1)
     tp, fp = 0, 0
     for contour in contours:
       x,y,w,h = cv.boundingRect(contour)
@@ -78,7 +81,7 @@ def processImgStream(img, splitimg=False, truth=None):
   if not splitimg:
     if truth is not None: return img, tp, fp, missed
     return img
-  bottom = cv.cvtColor(fg_mask, cv.COLOR_GRAY2RGB)[400:800,400:800]
+  bottom = cv.cvtColor(fg_mask[400:800,400:800], cv.COLOR_GRAY2RGB)
   bottom = np.concatenate((bottom,img[400:800,400:800]), axis=1)
   saveimg = np.concatenate((saveimg,bottom), axis=0)
   saveimg = cv.line(saveimg, (0,399),(799,399), (102,255,102), 5)
